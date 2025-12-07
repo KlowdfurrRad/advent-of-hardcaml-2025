@@ -15,6 +15,7 @@ end
 
 module O = struct
   type 'a t = {
+    current_pos : 'a; [@bits 8]
     password  : 'a; [@bits 32]  (* Explicit 32-bit width *)
   } [@@deriving sexp_of, hardcaml]
 end
@@ -55,10 +56,10 @@ let create (_ : Scope.t) (i : _ I.t) =
 
   (* 3. Counter Logic *)
   (* If the dial is about to land on 0, and input is valid, increment. *)
-  let lands_on_zero = next_pos ==: c8 0 in
+  let lands_on_zero = next_pos ==: c8 50 in
   
   let count = reg_fb spec ~enable:(i.valid &: lands_on_zero) ~width:32 ~f:(fun c -> 
     c +: (Signal.of_int_trunc ~width:32 1)
   ) in
 
-  { O.password = count }
+  { O.current_pos = current_pos; O.password = count }

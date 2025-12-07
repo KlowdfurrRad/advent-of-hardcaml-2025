@@ -31,6 +31,7 @@ let%expect_test "Day 1: Secret Entrance" =
   let in_distance  = Cyclesim.in_port sim "distance" in
   let in_clear     = Cyclesim.in_port sim "clear" in
   
+  let out_current_pos = Cyclesim.out_port sim "current_pos" in
   let out_password = Cyclesim.out_port sim "password" in
 
   (* 2. Reset *)
@@ -38,6 +39,8 @@ let%expect_test "Day 1: Secret Entrance" =
   in_clear := Bits.vdd;
   Cyclesim.cycle sim;
   in_clear := Bits.gnd;
+  Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
+  Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password);
 
   (* 3. Read File *)
   let lines = In_channel.read_lines "input.txt" in
@@ -50,6 +53,7 @@ let%expect_test "Day 1: Secret Entrance" =
       in_valid := Bits.vdd;
       in_is_right := (if is_right then Bits.vdd else Bits.gnd);
       in_distance := Bits.of_int_trunc ~width:8 dist;
+      Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
       Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password);
       Cyclesim.cycle sim
   );
