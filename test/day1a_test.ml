@@ -19,8 +19,8 @@ let%expect_test "Day 1: Secret Entrance" =
   let scope = Scope.create () in
 
   (* A. Create the Circuit *)
-  let module C = Circuit.With_interface (Day1.I) (Day1.O) in
-  let circuit = C.create_exn ~name:"day1" (Day1.create scope) in
+  let module C = Circuit.With_interface (Day1a.I) (Day1a.O) in
+  let circuit = C.create_exn ~name:"day1" (Day1a.create scope) in
 
   (* B. Create a GENERIC simulator *)
   let sim = Cyclesim.create circuit in
@@ -31,7 +31,7 @@ let%expect_test "Day 1: Secret Entrance" =
   let in_distance  = Cyclesim.in_port sim "distance" in
   let in_clear     = Cyclesim.in_port sim "clear" in
   
-  let out_current_pos = Cyclesim.out_port sim "current_pos" in
+  (* let out_current_pos = Cyclesim.out_port sim "current_pos" in *)
   let out_password = Cyclesim.out_port sim "password" in
 
   (* 2. Reset *)
@@ -39,11 +39,11 @@ let%expect_test "Day 1: Secret Entrance" =
   in_clear := Bits.vdd;
   Cyclesim.cycle sim;
   in_clear := Bits.gnd;
-  Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
-  Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password);
+  (* Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
+  Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password); *)
 
   (* 3. Read File *)
-  let lines = In_channel.read_lines "input.txt" in
+  let lines = In_channel.read_lines "day1.txt" in
 
   (* 4. Drive Simulation *)
   List.iter lines ~f:(fun line ->
@@ -53,8 +53,8 @@ let%expect_test "Day 1: Secret Entrance" =
       in_valid := Bits.vdd;
       in_is_right := (if is_right then Bits.vdd else Bits.gnd);
       in_distance := Bits.of_int_trunc ~width:8 dist;
-      Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
-      Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password);
+      (* Stdio.printf "Current Position: %d\n" (Bits.to_int_trunc !out_current_pos);
+      Stdio.printf "Current Password: %d\n" (Bits.to_int_trunc !out_password); *)
       Cyclesim.cycle sim
   );
 
@@ -66,8 +66,8 @@ let%expect_test "Day 1: Secret Entrance" =
   (* 6. Print Result *)
   (* FIX: Use to_int_trunc instead of to_int *)
   let final_password = Bits.to_int_trunc !out_password in
-  Stdio.printf "Secret Password: %d\n" final_password;
+  Stdio.printf "%d\n" final_password;
 
   (* 7. Expectation *)
   (* Run with 'dune runtest --auto-promote' to populate this *)
-  [%expect {| |}]
+  [%expect {| 3 |}]
