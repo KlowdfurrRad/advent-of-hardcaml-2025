@@ -19,7 +19,6 @@ module O = struct
   } [@@deriving sexp_of, hardcaml]
 end
 
-(* Helper Logic: Calculates the next position based on current position and inputs *)
 let calculate_next_pos (i : _ I.t) current_pos =
   let c8 val_ = Signal.of_int_trunc ~width:8 val_ in
   
@@ -39,8 +38,6 @@ let create (_ : Scope.t) (i : _ I.t) =
   let c8 val_ = Signal.of_int_trunc ~width:8 val_ in
 
   (* 1. Position Register *)
-  (* We pass the calculation function directly to reg_fb. *)
-  (* internal logic: next_state = f(current_state) *)
   let current_pos = reg_fb spec 
     ~enable:i.valid 
     ~width:8 
@@ -50,8 +47,6 @@ let create (_ : Scope.t) (i : _ I.t) =
   in
 
   (* 2. Re-calculate Next Position for the Counter *)
-  (* We need to know where the dial lands THIS cycle to count correctly. *)
-  (* Since 'current_pos' is the register output, applying the logic gives us the Next state. *)
   let next_pos = calculate_next_pos i current_pos in
 
   (* 3. Counter Logic *)

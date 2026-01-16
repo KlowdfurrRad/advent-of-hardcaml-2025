@@ -24,7 +24,6 @@ let divide_by_100_32_bit (x : t) =
   let shifted = srl (x *: reciprocal) ~by:32 in
   sel_bottom shifted ~width:32
 
-(* Helper Logic: Calculates the next position based on current position and inputs *)
 let calculate_next_pos (i : _ I.t) current_pos =
   let c32 val_ = Signal.of_int_trunc ~width:32 val_ in
   
@@ -46,8 +45,6 @@ let create (_ : Scope.t) (i : _ I.t) =
   let c32 val_ = Signal.of_int_trunc ~width:32 val_ in
 
   (* 1. Position Register *)
-  (* We pass the calculation function directly to reg_fb. *)
-  (* internal logic: next_state = f(current_state) *)
   let current_pos = reg_fb spec 
     ~enable:i.valid 
     ~width:32

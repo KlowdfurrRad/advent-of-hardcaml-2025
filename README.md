@@ -55,3 +55,28 @@ opam install -y hardcaml hardcaml_test_harness hardcaml_waveterm ppx_hardcaml
 
 opam install -y core core_unix ppx_jane rope re dune
 ```
+
+## Solution
+
+I have submitted hardcaml solutions to only day1 due to time constraints.
+I have labelled the first part of day1 as day1a and the second part as day1b. There were two parts on AOC.
+
+### day1a
+We just have to count the number of times the dial is on 0 at the end of rotation.
+The approach for day1a is slightly wrong. I have not implemented for the case where the rotation can be more than hundred.
+- I add or subtract the rotation. Then adjust the current position of the dial to within 0 - 100 with one check.
+
+The correct solution will involve using division from below. Not implementing due to time constraint.
+
+### day1b
+We have to count the total number of times the dial points to 0 even during rotation.
+The approach for day1b had me implementing division by 100. N divided by 100 was implemented by multiplying with the ceil of 2^32 * 1/100. Then shifting to the right by 32 bits. My other thought was implementing around a 26 deep divider, where I constantly check for each 2^x * 100 whether the number is more or less, keep subtracting and modifying a counter (anyway, this is not too important).
+
+```
+let divide_by_100_32_bit (x : t) =
+  let reciprocal = of_int_trunc ~width:32 42949673 in
+  let shifted = srl (x *: reciprocal) ~by:32 in
+  sel_bottom shifted ~width:32
+```
+
+The division was the most important part of the solution. Other parts are trivial.
